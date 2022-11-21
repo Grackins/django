@@ -7,6 +7,8 @@ be interpreted by the HTML engine (e.g. '<') into the appropriate entities.
 
 from functools import wraps
 
+from django.utils.functional import keep_lazy
+
 
 class SafeData:
     __slots__ = ()
@@ -47,11 +49,13 @@ SafeText = SafeString  # For backwards compatibility since Django 2.0.
 
 def _safety_decorator(safety_marker, func):
     @wraps(func)
-    def wrapped(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         return safety_marker(func(*args, **kwargs))
-    return wrapped
+
+    return wrapper
 
 
+@keep_lazy(SafeString)
 def mark_safe(s):
     """
     Explicitly mark a string as safe for (HTML) output purposes. The returned
@@ -61,7 +65,7 @@ def mark_safe(s):
 
     Can be called multiple times on a single string.
     """
-    if hasattr(s, '__html__'):
+    if hasattr(s, "__html__"):
         return s
     if callable(s):
         return _safety_decorator(mark_safe, s)

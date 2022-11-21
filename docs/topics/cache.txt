@@ -149,6 +149,15 @@ on the IP addresses 172.19.26.240 (port 11211), 172.19.26.242 (port 11212), and
         }
     }
 
+By default, the ``PyMemcacheCache`` backend sets the following options (you can
+override them in your :setting:`OPTIONS <CACHES-OPTIONS>`)::
+
+    'OPTIONS': {
+        'allow_unicode_keys': True,
+        'default_noreply': False,
+        'serde': pymemcache.serde.pickle_serde,
+    }
+
 A final point about Memcached is that memory-based caching has a
 disadvantage: because the cached data is stored in memory, the data will be
 lost if your server crashes. Clearly, memory isn't intended for permanent data
@@ -162,8 +171,6 @@ particularly temporary.
 
 Redis
 -----
-
-.. versionadded:: 4.0
 
 Redis__ is an in-memory database that can be used for caching. To begin you'll
 need a Redis server running either locally or on a remote machine.
@@ -185,7 +192,7 @@ To use Redis as your cache backend with Django:
 * Set :setting:`LOCATION <CACHES-LOCATION>` to the URL pointing to your Redis
   instance, using the appropriate scheme. See the ``redis-py`` docs for
   `details on the available schemes
-  <https://redis-py.readthedocs.io/en/stable/#redis.ConnectionPool.from_url>`_.
+  <https://redis-py.readthedocs.io/en/stable/connections.html#redis.connection.ConnectionPool.from_url>`_.
 
 For example, if Redis is running on localhost (127.0.0.1) port 6379::
 
@@ -431,7 +438,7 @@ cache backend with Django, use the Python import path as the
 
 If you're building your own backend, you can use the standard cache backends
 as reference implementations. You'll find the code in the
-``django/core/cache/backends/`` directory of the Django source.
+:source:`django/core/cache/backends/` directory of the Django source.
 
 Note: Without a really compelling reason, such as a host that doesn't support
 them, you should stick to the cache backends included with Django. They've
@@ -568,8 +575,8 @@ class`_ (``redis.ConnectionPool`` is used by default)::
         }
     }
 
-.. _`parser class`: https://github.com/andymccurdy/redis-py#parsers
-.. _`connection pool class`: https://github.com/andymccurdy/redis-py#connection-pools
+.. _`parser class`: https://github.com/redis/redis-py#parsers
+.. _`connection pool class`: https://github.com/redis/redis-py#connection-pools
 
 .. _the-per-site-cache:
 
@@ -1074,10 +1081,6 @@ the cache backend.
     ``cache.aadd()`` or ``cache.adelete_many()``. See `Asynchronous support`_
     for more details.
 
-.. versionchanged:: 4.0
-
-    The async variants of methods were added to the ``BaseCache``.
-
 .. _cache_key_prefixing:
 
 Cache key prefixing
@@ -1208,8 +1211,6 @@ instance, to do this for the ``locmem`` backend, put this code in a module::
 
 Asynchronous support
 ====================
-
-.. versionadded:: 4.0
 
 Django has developing support for asynchronous cache backends, but does not
 yet support asynchronous caching. It will be coming in a future release.
@@ -1350,7 +1351,7 @@ its first argument and a list/tuple of case-insensitive header names as its
 second argument.
 
 For more on Vary headers, see the :rfc:`official Vary spec
-<7231#section-7.1.4>`.
+<9110#section-12.5.5>`.
 
 Controlling cache: Using other headers
 ======================================
@@ -1401,10 +1402,10 @@ cache control header (it is internally called by the
 
         return response
 
-You can control downstream caches in other ways as well (see :rfc:`7234` for
+You can control downstream caches in other ways as well (see :rfc:`9111` for
 details on HTTP caching). For example, even if you don't use Django's
 server-side cache framework, you can still tell clients to cache a view for a
-certain amount of time with the :rfc:`max-age <7234#section-5.2.2.8>`
+certain amount of time with the :rfc:`max-age <9111#section-5.2.2.1>`
 directive::
 
     from django.views.decorators.cache import cache_control

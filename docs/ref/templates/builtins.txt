@@ -1764,13 +1764,6 @@ locale is ``pl`` (Polish):
 Using ``floatformat`` with no argument is equivalent to using ``floatformat``
 with an argument of ``-1``.
 
-.. versionchanged:: 4.0
-
-    ``floatformat`` template filter no longer depends on the
-    :setting:`USE_L10N` setting and always returns localized output.
-
-    The ``u`` suffix to force disabling localization was added.
-
 .. templatefilter:: force_escape
 
 ``force_escape``
@@ -1912,6 +1905,8 @@ The filter returns ``0`` for an undefined variable.
 
 ``length_is``
 -------------
+
+.. deprecated:: 4.2
 
 Returns ``True`` if the value's length is the argument, or ``False`` otherwise.
 
@@ -2229,7 +2224,7 @@ Note that you can backslash-escape a format string if you want to use the
 otherwise each is a format string that displays the hour and the month,
 respectively::
 
-    {% value|time:"H\h i\m" %}
+    {{ value|time:"H\h i\m" }}
 
 This would display as "01h 23m".
 
@@ -2397,7 +2392,7 @@ Newlines in the HTML content will be preserved.
 ------------------
 
 Recursively takes a self-nested list and returns an HTML unordered list --
-WITHOUT opening and closing <ul> tags.
+WITHOUT opening and closing ``<ul>`` tags.
 
 The list is assumed to be in the proper format. For example, if ``var``
 contains ``['States', ['Kansas', ['Lawrence', 'Topeka'], 'Illinois']]``, then
